@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HDX WILL CS Intake</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0B3A6E" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <!-- EmailJS (CDN) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script defer src="./app.js"></script>
+
+  <style>
+    :root{
+      --blue:#0B3A6E;
+      --card:#ffffff;
+      --black:#0b0b0b;
+      --green:#1f7a4a;
+      --green-2:#2a8a57;
+      --text-on-green:#ffffff;
+      --label:#0b1b2b;
+      --muted:#6b7a88;
+      --border:#d7dde3;
+      --shadow:0 10px 30px rgba(0,0,0,.22);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:var(--blue);
+      color:#111;
+      padding:28px 14px 40px;
+    }
+
+    main{
+      max-width:720px;
+      margin:0 auto;
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .brandbar{
+      background:var(--black);
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .brandbar img{
+      max-height:44px;
+      width:auto;
+      display:block;
+    }
+
+    .content{
+      padding:22px 22px 26px;
+    }
+
+    h1{
+      margin:6px 0 6px;
+      font-size:28px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .profile{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin:10px 0 18px;
+      background:#fff;
+    }
+    .profile .title{
+      font-weight:700;
+      margin-bottom:4px;
+      font-size:14px;
+    }
+    .profile .value{
+      font-size:13px;
+      color:#2b3a48;
+      line-height:1.35;
+      white-space:pre-line;
+    }
+    .profile button{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+
+    label{
+      display:block;
+      font-weight:700;
+      color:var(--label);
+      font-size:13px;
+      margin:0 0 6px;
+    }
+    .req{ color:#0b5; font-weight:900; }
+
+    input, select{
+      width:100%;
+      height:46px;
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,.08);
+      background:var(--green);
+      color:var(--text-on-green);
+      padding:10px 12px;
+      font-size:14px;
+      outline:none;
+    }
+    input::placeholder{ color:rgba(255,255,255,.72); }
+
+    select{
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      padding-right:36px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #fff 50%),
+        linear-gradient(135deg, #fff 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 19px,
+        calc(100% - 12px) 19px;
+      background-size:6px 6px, 6px 6px;
+      background-repeat:no-repeat;
+    }
+
+    input:focus, select:focus{
+      background:var(--green-2);
+      box-shadow:0 0 0 3px rgba(42,138,87,.25);
+    }
+
+    .divider{
+      border-top:1px solid var(--border);
+      margin:6px 0 2px;
+    }
+
+    .actions{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+    }
+    .btn{
+      width:100%;
+      height:52px;
+      border-radius:12px;
+      border:none;
+      cursor:pointer;
+      font-weight:900;
+      font-size:15px;
+    }
+    .btn-primary{
+      background:var(--green);
+      color:#fff;
+    }
+    .btn-primary:hover{ background:var(--green-2); }
+
+    .status{
+      margin-top:12px;
+      font-size:13px;
+      color:#0b2;
+      font-weight:700;
+      min-height:18px;
+    }
+    .status.error{ color:#ff3b3b; }
+
+    .modeRow{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .modeRow label{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      font-weight:800;
+      font-size:13px;
+      margin:0;
+    }
+    .modeRow input[type="radio"]{
+      width:auto;
+      height:auto;
+      accent-color:#0B3A6E;
+      transform: translateY(1px);
+    }
+
+    input[type="file"]{
+      background:#fff;
+      color:#111;
+      border:1px solid var(--border);
+      height:auto;
+      padding:10px 12px;
+    }
+
+    /* Phone row */
+    .phoneRow{
+      display:grid;
+      grid-template-columns: 240px 1fr;
+      gap:10px;
+      align-items:start;
+    }
+
+    /* Custom dropdown for flags (LOCAL images) */
+    .dd{ position:relative; width:100%; }
+    .ddBtn{
+      width:100%;
+      height:46px;
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,.08);
+      background:var(--green);
+      color:var(--text-on-green);
+      padding:10px 12px;
+      font-size:14px;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .ddBtn:focus{
+      outline:none;
+      background:var(--green-2);
+      box-shadow:0 0 0 3px rgba(42,138,87,.25);
+    }
+    .ddLeft{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .flagImg{
+      width:20px;
+      height:20px;
+      border-radius:4px;
+      background:#fff;
+      flex:0 0 auto;
+      object-fit:cover;
+    }
+    .ddText{
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .ddCaret{ opacity:.9; font-weight:900; flex:0 0 auto; }
+
+    .ddList{
+      position:absolute;
+      left:0;
+      right:0;
+      top:52px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      max-height:280px;
+      overflow:auto;
+      display:none;
+      z-index:50;
+      padding:6px;
+    }
+    .dd.open .ddList{ display:block; }
+    .ddItem{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-size:14px;
+      color:#1c2b38;
+    }
+    .ddItem:hover{ background:#f2f5f8; }
+    .ddItem small{
+      color:#5a6a78;
+      font-weight:700;
+      margin-left:auto;
+    }
+
+    .ddSearch{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:14px;
+      outline:none;
+      margin-bottom:6px;
+      background:#fff;
+      color:#111;
+      height:auto;
+    }
+
+    @media (max-width:520px){
+      body{ padding:18px 10px 26px; }
+      h1{ font-size:24px; }
+      main{ border-radius:16px; }
+      .phoneRow{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="brandbar">
+      <img src="logo.png" alt="HDX WILL EUROPE GmbH" />
+    </div>
+
+    <div class="content">
+      <h1>CS Intake Form</h1>
+      <p class="subtitle">All fields are required.</p>
+
+      <!-- Profile -->
+      <div class="profile">
+        <div style="flex:1;">
+          <div class="title">Profile</div>
+          <div class="value" id="profileText">Not set</div>
+
+          <div id="profileEditor" style="display:none; margin-top:10px;">
+            <label style="margin-top:10px;">Company <span class="req">*</span></label>
+            <input id="companyInput" type="text" placeholder="e.g. HDX" />
+
+            <label style="margin-top:10px;">Agent <span class="req">*</span></label>
+            <input id="agentInput" type="text" placeholder="e.g. Seungmin Yi" />
+
+            <!-- Country moved here -->
+            <label style="margin-top:10px;">Country <span class="req">*</span></label>
+            <select id="profileCountryInput" required>
+              <option value="" selected>Select a country</option>
+            </select>
+
+            <div style="display:flex; gap:10px; margin-top:12px;">
+              <button type="button" class="btn" id="saveProfileBtn"
+                style="background:#fff; color:#0B3A6E; border:1px solid #d7dde3; font-weight:900;">
+                Save
+              </button>
+
+              <button type="button" class="btn" id="cancelProfileBtn"
+                style="background:#fff; color:#0B3A6E; border:1px solid #d7dde3; font-weight:900;">
+                Cancel
+              </button>
+            </div>
+
+            <div id="profileMsg" class="status error" style="margin-top:10px;"></div>
+          </div>
+        </div>
+
+        <button type="button" id="editProfileBtn">Edit</button>
+      </div>
+
+      <form id="csForm">
+        <div class="grid">
+          <!-- hidden: EmailJS template 변수로 같이 보낼 값 -->
+          <input type="hidden" name="company" id="company" value="" />
+          <input type="hidden" name="agent" id="agent" value="" />
+          <input type="hidden" name="country" id="country" value="" />
+
+          <div>
+            <label for="clinic_name">Clinic Name <span class="req">*</span></label>
+            <input name="clinic_name" id="clinic_name" type="text" required />
+          </div>
+
+          <div>
+            <label for="clinic_address">Clinic Address <span class="req">*</span></label>
+            <input name="clinic_address" id="clinic_address" type="text" required />
+          </div>
+
+          <!-- Phone: country code + flag IMAGE + number -->
+          <div>
+            <label>Clinic Phone <span class="req">*</span></label>
+
+            <div class="phoneRow">
+              <!-- real value -->
+              <input type="hidden" id="phone_country" required />
+
+              <div class="dd" id="phoneDD">
+                <button class="ddBtn" type="button" id="phoneDDBtn">
+                  <span class="ddLeft">
+                    <img class="flagImg" id="phoneFlag" alt="" />
+                    <span class="ddText" id="phoneDDText">Select country code</span>
+                  </span>
+                  <span class="ddCaret">▾</span>
+                </button>
+
+                <div class="ddList" id="phoneDDList">
+                  <input class="ddSearch" id="phoneSearch" type="text" placeholder="Search country..." />
+                  <div id="phoneItems"></div>
+                </div>
+              </div>
+
+              <input name="clinic_phone" id="clinic_phone" type="text" placeholder="e.g. 170 123 4567" required />
+            </div>
+          </div>
+
+          <div>
+            <label for="dentist_name">Dentist / Owner Name <span class="req">*</span></label>
+            <input name="dentist_name" id="dentist_name" type="text" required />
+          </div>
+
+          <div class="divider"></div>
+
+          <div>
+            <label for="device_name">Device Name / Model <span class="req">*</span></label>
+            <select name="device_name" id="device_name" required>
+              <option value="" selected>Select a device</option>
+              <option value="Dentri">Dentri</option>
+              <option value="Dentio">Dentio</option>
+              <option value="Eco-X">Eco-X</option>
+            </select>
+          </div>
+
+          <!-- Device S/N (Text or Photo) -->
+          <div>
+            <label>Device Serial Number <span class="req">*</span></label>
+
+            <div class="modeRow">
+              <label><input type="radio" name="sn_mode" value="text" checked /> Text</label>
+              <label><input type="radio" name="sn_mode" value="photo" /> 📷 Photo</label>
+            </div>
+
+            <input name="device_sn" id="device_sn" type="text" required />
+
+            <div id="snPhotoWrap" style="display:none; margin-top:10px;">
+              <input type="file" id="sn_photo" accept="image/*" capture="environment" />
+              <div id="snPhotoHint" class="status" style="margin-top:6px; color:#6b7a88;"></div>
+            </div>
+          </div>
+
+          <!-- TeamViewer (Text or Photo) -->
+          <div>
+            <label>TeamViewer Info <span class="req">*</span></label>
+
+            <div class="modeRow">
+              <label><input type="radio" name="tv_mode" value="text" checked /> Text</label>
+              <label><input type="radio" name="tv_mode" value="photo" /> 📷 Photo</label>
+            </div>
+
+            <div id="tvTextWrap">
+              <div style="margin-bottom:14px;">
+                <label for="teamviewer_id">TeamViewer ID <span class="req">*</span></label>
+                <input name="teamviewer_id" id="teamviewer_id" type="text" required />
+              </div>
+
+              <div>
+                <label for="teamviewer_pw">TeamViewer Password <span class="req">*</span></label>
+                <input name="teamviewer_pw" id="teamviewer_pw" type="text" required />
+              </div>
+            </div>
+
+            <div id="tvPhotoWrap" style="display:none; margin-top:10px;">
+              <input type="file" id="tv_photo" accept="image/*" capture="environment" />
+              <div id="tvPhotoHint" class="status" style="margin-top:6px; color:#6b7a88;"></div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" type="submit" id="submitBtn">Submit</button>
+          </div>
+        </div>
+
+        <div id="status" class="status"></div>
+      </form>
+    </div>
+  </main>
+</body>
+</html>
